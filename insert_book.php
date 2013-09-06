@@ -33,10 +33,18 @@ if(mysqli_connect_errno())
     exit;
 }
 
-$query = "insert into books values
-    ('".$isbn."', '".$author."', '".$title."', '".$price."')";
-echo "QUERY:".$query."<br/>";
-$result = mysqli_query($db, $query);
+$query = "insert into books values(?,?,?,?)";
+$stmt = mysqli_prepare($db, $query);
+mysqli_stmt_bind_param($stmt, "sssd", $isbn, $author, $title, $price);
+mysqli_stmt_execute($stmt);
+mysqli_stmt_close($stmt);
+$num = mysqli_affected_rows($db);
+echo $num."book insert into database.";
+
+/* $query = "insert into books values
+    ('".$isbn."', '".$author."', '".$title."', '".$price."')"; */
+// echo "QUERY:".$query."<br/>";
+/* $result = mysqli_query($db, $query);
 if($result)
 {
     echo mysqli_affected_rows()."book insert into database.";
@@ -44,9 +52,8 @@ if($result)
 else
 {
     echo "An error has occured. The item was not added.";
-}
-
-$db->close();
+} */
+mysqli_close($db);
 ?>
 </body>
 </html>

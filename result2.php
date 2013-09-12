@@ -1,10 +1,11 @@
 <html>
 <head>
     <title>Book-O-Rama Search Results</title>
-
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 <h1>Book-O-Rama Search Results</h1>
 <?php
+// header('Content-Type:text/html;charset=utf-8');
 $searchtype = $_POST['searchtype'];
 $searchterm = trim($_POST['searchterm']);
 if(!searchtype || !searchterm)
@@ -24,10 +25,13 @@ if(mysqli_connect_errno())
     echo 'Error:Could not connect to db,Please try later:';
     exit ;
 }
-
+mysqli_query($db,"set names utf8");
+printf("Current character set: %s\n", mysqli_character_set_name($db));
+#mysql_query("SET CHARACTER_SET_CLIENT=utf8", $db);
+#mysql_query("SET CHARACTER_SET_RESULTS=utf8", $db);
 $query = "select * from books where ".$searchtype." like '%".$searchterm."%'";
 
-echo "QUERY:".$query."<br/>";
+echo "QUERY_new:".$query."<br/>";
 
 $result = mysqli_query($db, $query);
 $result1 = mysqli_query($db, $query);
@@ -62,7 +66,9 @@ for($i = 0; $i < $num_results; $i++)
 
     $row2 = mysqli_fetch_row($result2);
     echo "<p><strong>".($i+1).".Title:";
-    echo htmlspecialchars(stripcslashes($row2[2]));
+    echo stripcslashes($row2[2])."<br/>";
+    echo $row2[2]."<br/>";
+    echo htmlspecialchars($row2[2], ENT_COMPAT ,'UTF-8');
     echo "</strong><br/>Author:";
     echo stripcslashes($row2[1]);
     echo "<br/>ISBN:";
